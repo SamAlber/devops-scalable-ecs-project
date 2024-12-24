@@ -1,0 +1,30 @@
+# Docker Compose file to run Terraform in a containerized environment
+services:
+  terraform:
+    # Use the official Terraform Docker image (version 1.6.2)
+    image: hashicorp/terraform:1.9.8
+
+    # Map local directories to the container so Terraform can access
+    # your configuration files, modules, or scripts.
+    volumes:
+      # Mount the local 'setup' directory into /tf/setup inside the container
+      - ./setup:/tf/setup
+      
+      # Mount the local 'deploy' directory into /tf/deploy inside the container
+      - ./deploy:/tf/deploy
+
+    # Set the default working directory inside the container
+    working_dir: /tf
+
+    # Pass AWS credentials and other environment variables
+    environment:
+      # These come from your host environment variables
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      
+      # Set the default AWS region
+      - AWS_DEFAULT_REGION=us-east-1
+      
+      # Specify the Terraform workspace to use, also from host environment
+      - TF_WORKSPACE=${TF_WORKSPACE}
